@@ -16,7 +16,7 @@ def create_dataset(data, text_file, model_chain):
         n = len(answer)
 
         for j in range(n // 2):
-            text_file.write(f'{ind} $:$ {answer[j]} $:$ {answer[n - j - 1]}\n')
+            text_file.write(f'{i+1} $:$ {answer[j]} $:$ {answer[n - j - 1]}\n')
 
         print(f'created pairs for doc {ind}/{len(data)}\n')
 
