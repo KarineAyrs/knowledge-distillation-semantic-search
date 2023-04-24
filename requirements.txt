@@ -1,0 +1,6 @@
+torch~=2.0.0
+pandas~=1.4.3
+transformers~=4.20.1
+tqdm~=4.62.3
+langchain~=0.0.133
+openai~=0.26.5

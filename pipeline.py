@@ -3,7 +3,7 @@ from data_processing.llama_processing import create_llama_samples, llama_samples
 from train.Train import train_and_save
 
 
-def pipeline(llm, lm, llm_path='./model/gpt4all-lora-quantized-new.bin', docs_path='./data/docs'):
+def pipeline(llm, lm, llm_path='./model/gpt4all-lora-quantized-new.bin', docs_path='./data/docs.csv'):
     train_csv = ''
     if llm == 'openai':
         create_openai_samples(docs_path)
