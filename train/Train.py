@@ -13,6 +13,7 @@ from tqdm import tqdm
 import pandas as pd
 
 from datetime import datetime
+import yaml
 
 models = {'bert': 'bert-base-uncased',
           'xlmroberta': 'xlm-roberta-base',
@@ -24,14 +25,21 @@ model_tokenizer = {'bert-base-uncased': BertTokenizer,
 
 
 def train_and_save(lm, train_path):
-    bs = 15
-    epochs = 3
-    learning_rate = 1e-6
+    with open('./config/model.yml', 'r') as stream:
+        try:
+            cfg = yaml.safe_load(stream)
+        except yaml.YAMLError as exc:
+            print(exc)
+
+    bs = cfg['batch_size']
+    epochs = cfg['epochs']
+    learning_rate = float(cfg['learning_rate'])
+
     use_cuda = torch.cuda.is_available()
     device = torch.device("cuda" if use_cuda else "cpu")
 
     model_name = models[lm]
-    tokenizer = model_tokenizer[model_name]
+    tokenizer = model_tokenizer[model_name].from_pretrained(model_name)
     dataset = pd.read_csv(train_path)
 
     model = STSBertModel(model_name)
@@ -84,5 +92,6 @@ def train_loop(model, dataloader, device, epochs, optimizer, criterion):
 
         if loss.item() < best_loss:
             best_loss = loss.item()
-            torch.save(model, f'./checkpoints/{model.model_name} : {now.strftime("%m-%d-%Y-%H-%M-%S")}')
-            print('model saved!')
+            save_path = f'./checkpoints/{model.model_name} : {now.strftime("%m-%d-%Y-%H-%M-%S")}'
+            torch.save(model, save_path)
+            print(f'Best model saved to! {save_path}')

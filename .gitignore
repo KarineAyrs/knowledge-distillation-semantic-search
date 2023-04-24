@@ -184,3 +184,5 @@ fabric.properties
 # idea folder, uncomment if you don't need it
 .idea
 dipopenai/.env
+data/llama_train_test.csv
+data/llama_samples_test.txt

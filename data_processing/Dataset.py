@@ -14,7 +14,8 @@ class DataSequence(torch.utils.data.Dataset):
         row = self.data.iloc[idx]
         text_cat = [str(row['first']), str(row['second'])]
 
-        tokenized = self.tokenizer(text_cat, padding='max_length', max_length=128, truncation=True, return_tensors="pt")
+        tokenized = self.tokenizer(text_cat, padding='max_length', max_length=128, truncation=True,
+                                   return_tensors="pt")
         return tokenized, 1.0
 
 

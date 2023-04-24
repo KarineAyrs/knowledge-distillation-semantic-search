@@ -44,7 +44,7 @@ optional arguments:
 
 ## Data examples 
 - In `data` folder you can find examples of 
-  - `docs,csv` - documents for generating synthetic data
+  - `docs.csv` - documents for generating synthetic data
   - `<model>_samples.txt` - generated synthetic data
   - `<model>_train.csv` - cleaned generated synthetic data in csv format
 

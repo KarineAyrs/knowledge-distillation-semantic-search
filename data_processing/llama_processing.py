@@ -35,16 +35,20 @@ def create_llama_samples(llm_path, docs_path):
 
     docs = pd.read_csv(docs_path)
 
-    with open('./data/llama_samples.txt', 'a') as f:
+    save_path = './data/llama_samples.txt'
+    with open(save_path, 'a') as f:
         __create_dataset(docs, f, llm_chain)
 
 
 def llama_samples_to_csv():
+    print('converting to csv...\n')
     ids = []
     first = []
     second = []
 
-    with open('./data/llama_samples.txt') as f:
+    path = './data/llama_samples.txt'
+
+    with open(path) as f:
         lines = f.readlines()
 
         for i, line in enumerate(lines):
@@ -67,5 +71,6 @@ def llama_samples_to_csv():
 
     d = {'ids': ids, 'first': first, 'second': second}
 
+    save_path = './data/llama_train.csv'
     train = pd.DataFrame.from_dict(d)
-    train.to_csv('./data/llama_train.csv', index=False)
+    train.to_csv(save_path, index=False)

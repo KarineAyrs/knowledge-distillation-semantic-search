@@ -11,7 +11,7 @@ def exit_on_error(msg):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
-        description='''Welcome to KDSS!\nPlease choose LLM for distillation! If openai is chosen, do not 
+        description='''Welcome to KDSS!\nPlease choose LLM for distillation! If openai is chosen, do not
         forget to add OPENAI_KEY=<your key> to env! In case of alpaca download model by instructions in README.md!
         \nThere are 3 models are available for tuning now: BERT, XLM-RoBERTa, DeBERTa V3''')
     action_choices = ['openai', 'alpaca']
@@ -23,10 +23,9 @@ if __name__ == '__main__':
     parser.add_argument('--alpaca_path', action='store', dest='alpaca_path',
                         help='Path to Alpaca(LoRa). See README.md for download instructions',
                         nargs='?', default='./model/gpt4all-lora-quantized-new.bin'
-                        # ,required=(action_choices[1] in argv)
                         )
     parser.add_argument('--model', action='store', choices=models_choices, dest='model',
-                        help='''There are 3 models are available for tuning now: bert - BERT, 
+                        help='''There are 3 models are available for tuning now: bert - BERT,
                         xlmroberta - XLM-RoBERTa, debertav3 - DeBERTa V3''',
                         required=True)
     parser.add_argument('--path_to_docs', action='store', dest='path_to_docs',
@@ -38,8 +37,6 @@ if __name__ == '__main__':
     current_dir = os.getcwd()
 
     llm, lm, llm_path, docs_path = args.large_model, args.model, args.alpaca_path, args.path_to_docs
-
-    print(docs_path)
 
     if llm == 'openai' and os.getenv('OPENAI_KEY') == '':
         exit_on_error('Please provide your valid OPENAI_KEY!')
@@ -57,4 +54,4 @@ if __name__ == '__main__':
     if 'docs' not in docs.columns:
         exit_on_error('Please provide CSV with `docs` column!')
 
-    pipeline(llm, lm, docs_path, llm_path)
+    pipeline(llm, lm, llm_path, docs_path)
