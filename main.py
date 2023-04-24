@@ -1,21 +1,59 @@
-from Trainer import DistilTrainer
+import argparse
+import os
+from sys import argv
+import pandas as pd
+from pipeline import pipeline
 
-index = 'Происхождение Александра Сергеевича Пушкина идёт от разветвлённого нетитулованного дворянского рода Пушкиных, восходившего по генеалогической легенде к «мужу честну» Ратше. Пушкин неоднократно писал о своей родословной в стихах и прозе; он видел в своих предках образец истинной «аристократии», древнего рода, честно служившего отечеству, но не снискавшего благосклонности правителей и «гонимого». Не раз он обращался (в том числе в художественной форме) и к образу своего прадеда по матери — африканца Абрама Петровича Ганнибала, ставшего слугой и воспитанником Петра I, а потом военным инженером и генералом'
-pairs_num = 5
-queries = ''
-model = None
-training_args = None
-optimizer = None
-scheduler = None
-callbacks = None
 
-dTrainer = DistilTrainer(index,
-                         queries,
-                         model,
-                         pairs_num,
-                         training_args,
-                         optimizer,
-                         scheduler,
-                         callbacks)
+def exit_on_error(msg):
+    print(msg)
+    exit(1)
 
-trained_model = dTrainer.train()
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(
+        description='''Welcome to KDSS!\nPlease choose LLM for distillation! Please if openai is chosen, do not 
+        forget to add OPENAI_KEY=<your key> to env! In case of alpaca download model by instructions in README.md!
+        \nThere are 3 models are available for tuning now: BERT, XLM-RoBERTa, DeBERTa V3''')
+    action_choices = ['openai', 'alpaca']
+    models_choices = ['bert', 'xlmroberta', 'debertav3']
+    parser.add_argument('--large_model', action='store', choices=action_choices, dest='large_model',
+                        help='openai - text-davinci-003, alpaca - Alpaca(LoRa)',
+                        required=True)
+
+    parser.add_argument('--alpaca_path', action='store', dest='alpaca_path',
+                        help='Path to Alpaca(LoRa). See README.md for download instructions',
+                        required=(action_choices[1] in argv))
+    parser.add_argument('--model', action='store', choices=models_choices, dest='model',
+                        help='''There are 3 models are available for tuning now: bert - BERT, 
+                        xlmroberta - XLM-RoBERTa, debertav3 - DeBERTa V3''',
+                        required=True)
+    parser.add_argument('--path_to_docs', action='store', dest='path_to_docs',
+                        help='path to docs to finetune model. File should be in csv format with required column `docs`',
+                        required=True)
+
+    args = parser.parse_args()
+
+    current_dir = os.getcwd()
+
+    llm, lm, llm_path, docs_path = args.large_model, args.model, args.alpaca_path, args.path_to_docs
+
+    if llm == 'openai' and os.getenv('OPENAI_KEY') == '':
+        exit_on_error('Please provide your valid OPENAI_KEY!')
+
+    if llm == 'alpaca' and not os.path.isfile(llm_path):
+        exit_on_error('Please provide valid path to alpaca model!')
+
+    if not os.path.isfile(current_dir + '/' + docs_path):
+        print(docs_path)
+        exit_on_error('Please provide valid path to documents!')
+
+    if not docs_path.lower().endswith('.csv'):
+        exit_on_error('Please provide CSV file!')
+
+    docs = pd.read_csv(current_dir + '/' + docs_path)
+    if 'docs' not in docs.columns:
+        exit_on_error('Please provide CSV with `docs` column!')
+
+    pipeline(llm, lm, docs_path, llm_path)
+
