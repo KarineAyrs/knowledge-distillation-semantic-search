@@ -1,6 +1,5 @@
 import argparse
 import os
-from sys import argv
 import pandas as pd
 from pipeline import pipeline
 
