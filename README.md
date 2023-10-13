@@ -1,7 +1,7 @@
 # Knowledge Distillation based Semantic Search
 KDSS is the framework that allows to use knowledge of large language models to train smaller models.
 
-// TODO: describe algorithm
+
 
 
 ![kdss_resized](https://user-images.githubusercontent.com/52883493/230601804-aaea074b-237f-43c4-8885-dfa7104e9262.png)
